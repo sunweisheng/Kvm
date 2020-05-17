@@ -20,7 +20,7 @@ yum install epel-release -y
 yum update -y
 
 #安装常用软件
-yum -y install htop wget yum-utils telnet net-tools acpid
+yum -y install htop wget yum-utils telnet net-tools acpid device-mapper-persistent-data lvm2
 
 #校时
 yum install ntpdate
