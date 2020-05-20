@@ -271,6 +271,15 @@ qemu-img snapshot -c back20200517 centos7-k8s-node2.qcow
 #查看快照信息
 qemu-img info centos7-mysql.qcow
 
+#备份虚拟机设置
+virsh dumpxml centos7-k8s-master > /backup/domains/centos7-k8s-master.xml
+virsh dumpxml centos7-k8s-node1 > /backup/domains/centos7-k8s-node1.xml
+virsh dumpxml centos7-k8s-node2 > /backup/domains/centos7-k8s-node2.xml
+virsh dumpxml centos7-mysql > /backup/domains/centos7-mysql.xml
+
+#备份虚拟机硬盘
+cp /data/kvm/*.* .
+
 #启动虚拟机
 virsh start centos7-mysql
 virsh start centos7-k8s-master
