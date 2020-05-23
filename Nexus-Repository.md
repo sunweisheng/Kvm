@@ -91,14 +91,14 @@ tail -f /opt/sonatype-work/nexus3/log/nexus.log
 
 访问http://192.168.0.5:8081 进入管理界面。
 
-## 创建私有仓库
+## 创建代理仓库
 
-[创建私有的YUM仓库](https://help.sonatype.com/repomanager3/formats/yum-repositories)
+[创建YUM代理仓库](https://help.sonatype.com/repomanager3/formats/yum-repositories)
 
 私有仓库示例:
 
 - Nexus服务器域名：repo.bluersw.com
-- 仓库名称：repo-bluersw
+- 仓库名称：centos-yum-proxy（属于repo-bluersw分组）
 - 仓库类型：proxy
 - 远程仓库地址：http://mirror.centos.org/centos/
 
@@ -123,6 +123,19 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 priority=1
 ```
+
+```shell
+yum clean all
+yum makecache
+yum update
+```
+
+## 代理epel仓库
+
+- Nexus服务器域名：repo.bluersw.com
+- 仓库名称：epel-yum-proxy（属于repo-bluersw分组）
+- 仓库类型：proxy
+- 远程仓库地址：http://download.fedoraproject.org/pub/epel/
 
 ```shell
 #安装EPEL源
@@ -166,8 +179,4 @@ gpgcheck=1
 ```shell
 #只使用私有库
 mv epel*.* bak
-
-yum clean all
-yum makecache
-yum update
 ```
