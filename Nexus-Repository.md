@@ -95,14 +95,14 @@ tail -f /opt/sonatype-work/nexus3/log/nexus.log
 
 [创建YUM代理仓库](https://help.sonatype.com/repomanager3/formats/yum-repositories)
 
-私有仓库示例:
+### 创建centos代理仓库
 
 - Nexus服务器域名：repo.bluersw.com
 - 仓库名称：centos-yum-proxy（属于repo-bluersw分组）
 - 仓库类型：proxy
 - 远程仓库地址：http://mirror.centos.org/centos/
 
-## 客户端配置
+客户端配置：
 
 ```shell
 #备份
@@ -130,12 +130,14 @@ yum makecache
 yum update
 ```
 
-## 代理epel仓库
+### 创建epel代理仓库
 
 - Nexus服务器域名：repo.bluersw.com
 - 仓库名称：epel-yum-proxy（属于repo-bluersw分组）
 - 仓库类型：proxy
 - 远程仓库地址：http://download.fedoraproject.org/pub/epel/
+
+客户端配置：
 
 ```shell
 #安装EPEL源
