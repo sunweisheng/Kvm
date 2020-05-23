@@ -106,9 +106,9 @@ tail -f /opt/sonatype-work/nexus3/log/nexus.log
 
 ```shell
 #备份
+cd /etc/yum.repos.d/
 mkdir bak
 mv *.repo bak/
-cp CentOS-Base.repo CentOS-Base.repo.bak
 
 #创建nexus.repo
 vi /etc/yum.repos.d/nexus.repo
@@ -125,6 +125,48 @@ priority=1
 ```
 
 ```shell
+#安装EPEL源
+yum install epel-release -y
+
+#升级系统
+yum update -y
+
+vi /etc/yum.repos.d/nexus-epel.repo
+```
+
+```conf
+[epel]
+name=Extra Packages for Enterprise Linux 7 - $basearch
+baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/$basearch
+#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch&infra=$infra&content=$contentdir
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+
+[epel-debuginfo]
+name=Extra Packages for Enterprise Linux 7 - $basearch - Debug
+baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/$basearch/debug
+#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-7&arch=$basearch&infra=$infra&content=$contentdir
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+gpgcheck=1
+
+[epel-source]
+name=Extra Packages for Enterprise Linux 7 - $basearch - Source
+baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/$basearch/SRPMS
+#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-source-7&arch=$basearch&infra=$infra&content=$contentdir
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+gpgcheck=1
+```
+
+```shell
+#只使用私有库
+mv epel*.* bak
+
 yum clean all
 yum makecache
 yum update
