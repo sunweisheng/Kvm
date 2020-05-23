@@ -63,6 +63,9 @@ firewall-cmd --zone=public --list-ports
 
 ```shell
 yum install -y libvirt qemu-kvm virt-install
+
+#重启
+reboot
 ```
 
 ## 安装第一台虚拟机
