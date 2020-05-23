@@ -3,7 +3,9 @@
 ## 下载安装程序
 
 [下载Nexus Repository最新版本](https://www.sonatype.com/download-oss-sonatype)
+
 [配置说明](https://help.sonatype.com/repomanager3)
+
 将下载后的文件传输到服务器上
 
 ```shell
@@ -88,3 +90,42 @@ tail -f /opt/sonatype-work/nexus3/log/nexus.log
 ```
 
 访问http://192.168.0.5:8081 进入管理界面。
+
+## 创建私有仓库
+
+[创建私有的YUM仓库](https://help.sonatype.com/repomanager3/formats/yum-repositories)
+
+私有仓库示例:
+
+- Nexus服务器域名：repo.bluersw.com
+- 仓库名称：repo-bluersw
+- 仓库类型：proxy
+- 远程仓库地址：http://mirror.centos.org/centos/
+
+## 客户端配置
+
+```shell
+#备份
+mkdir bak
+mv *.repo bak/
+cp CentOS-Base.repo CentOS-Base.repo.bak
+
+#创建nexus.repo
+vi /etc/yum.repos.d/nexus.repo
+```
+
+```conf
+[nexusrepo]
+name=Nexus Repository
+baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/os/$basearch/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+priority=1
+```
+
+```shell
+yum clean all
+yum makecache
+yum update
+```
