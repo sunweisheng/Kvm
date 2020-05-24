@@ -198,6 +198,8 @@ Group仓库：
 - Repository Connectors：HTTP 63000端口（负责Pull Image）
 - 对外地址：http://repo.bluersw.com:63000
 
+group类型的Docker仓库只能pull不能push。
+
 在Security中打开Realms界面，激活Docker Bearer Token Realm 选项。
 
 客户端配置：
