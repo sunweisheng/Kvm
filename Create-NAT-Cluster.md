@@ -195,6 +195,14 @@ yum update -y
 #安装常用软件
 yum -y install htop wget yum-utils telnet net-tools acpid
 
+#校时
+yum install ntpdate
+
+vi /etc/sysconfig/clock
+#添加或修改时区
+ZONE=“Asia/Shanghai”
+
+ntpdate us.pool.ntp.org
 ```
 
 ## 收缩虚拟机文件后复制出其他虚拟机硬盘
