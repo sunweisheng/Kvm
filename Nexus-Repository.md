@@ -91,16 +91,23 @@ tail -f /opt/sonatype-work/nexus3/log/nexus.log
 
 访问http://192.168.0.5:8081 进入管理界面。
 
-## 创建代理仓库
+## 创建YUM仓库
 
-[创建YUM代理仓库](https://help.sonatype.com/repomanager3/formats/yum-repositories)
+[创建YUM代理仓库官方说明](https://help.sonatype.com/repomanager3/formats/yum-repositories)
 
-### 创建centos代理仓库
+Nexus服务器域名和端口：repo.bluersw.com：8081
 
-- Nexus服务器域名：repo.bluersw.com
+Proxy仓库：
+
 - 仓库名称：aliyun-yum-proxy（属于repo-bluersw分组）
 - 仓库类型：proxy
 - 远程仓库地址：http://mirrors.aliyun.com/centos/
+
+Group仓库：
+
+- 仓库名称：repo-bluersw（含多个proxy仓库）
+- 仓库类型：group
+- 对外地址：http://repo.bluersw.com:8081/repository/repo-bluersw/
 
 客户端配置：
 
@@ -159,4 +166,72 @@ yum makecache
 
 #更新系统第一次会比较慢
 yum update -y
+```
+
+下载的RPM包都存储在Nexus服务器上，以后其他服务器照此配置就不用从外网下载了。
+
+## 创建Docker仓库
+
+[创建Docker仓库官方说明](https://help.sonatype.com/repomanager3/formats/docker-registry)
+
+Proxy仓库：
+
+- 仓库名称：hub-docker-proxy
+- 仓库类型：proxy
+- 远程仓库地址：https://registry-1.docker.io
+- Repository Connectors：不创建（由Group仓库负责）
+- Enable Docker V1 API：勾选
+- Docker Index：Use Docker Hub
+
+Hosted仓库：
+
+- 仓库名称：my-docker-host
+- 仓库类型：hosted
+- Repository Connectors：HTTP 5000端口（负责Push Image）
+- Enable Docker V1 API：勾选
+- 对外地址：http://repo.bluersw.com:5000
+
+Group仓库：
+
+- 仓库名称：docker-bluersw（含hub-docker-proxy和my-docker-host）
+- 仓库类型：group
+- Repository Connectors：HTTP 63000端口（负责Pull Image）
+- 对外地址：http://repo.bluersw.com:63000
+
+在Security中打开Realms界面，激活Docker Bearer Token Realm 选项。
+
+客户端配置：
+
+```shell
+vi /etc/docker/daemon.json
+```
+
+修改Docker的daemon配置文件，添加上述两个Docker私服地址。
+
+```json
+{
+"insecure-registries": ["http://repo.bluersw.com:63000","http://repo.bluersw.com:5000"]
+}
+```
+
+```shell
+#登录
+docker login http://repo.bluersw.com:63000
+docker login http://repo.bluersw.com:5000
+
+#重启服务
+systemctl restart docker
+
+#使用代理服务器下载镜像，镜像会存在代理服务器上供其他人下载
+docker pull repo.bluersw.com:63000/hello-world
+
+[root@ops docker]# docker images
+REPOSITORY                           TAG                 IMAGE ID            CREATED             SIZE
+repo.bluersw.com:63000/hello-world   latest              bf756fb1ae65        4 months ago        13.3kB
+
+#改名
+docker tag repo.bluersw.com:63000/hello-world repo.bluersw.com:5000/hello-world
+
+#上传到Docker私有仓库
+docker push repo.bluersw.com:5000/hello-world
 ```
