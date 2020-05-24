@@ -98,9 +98,9 @@ tail -f /opt/sonatype-work/nexus3/log/nexus.log
 ### 创建centos代理仓库
 
 - Nexus服务器域名：repo.bluersw.com
-- 仓库名称：centos-yum-proxy（属于repo-bluersw分组）
+- 仓库名称：aliyun-yum-proxy（属于repo-bluersw分组）
 - 仓库类型：proxy
-- 远程仓库地址：http://mirror.centos.org/centos/
+- 远程仓库地址：http://mirrors.aliyun.com/centos/
 
 客户端配置：
 
@@ -108,77 +108,55 @@ tail -f /opt/sonatype-work/nexus3/log/nexus.log
 #备份
 cd /etc/yum.repos.d/
 mkdir bak
-mv *.repo bak/
+cp *.repo bak/
 
-#创建nexus.repo
-vi /etc/yum.repos.d/nexus.repo
+vi /etc/yum.repos.d/CentOS-Base.repo
 ```
 
+修改CentOS-Base文件内容：
+
 ```conf
-[nexusrepo]
-name=Nexus Repository
+[base]
+name=CentOS-$releasever - Base
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/
 baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/os/$basearch/
-enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-priority=1
+
+#released updates
+[updates]
+name=CentOS-$releasever - Updates
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/updates/$basearch/
+baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#additional packages that may be useful
+[extras]
+name=CentOS-$releasever - Extras
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=extras&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/extras/$basearch/
+baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus
+#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=centosplus&infra=$infra
+#baseurl=http://mirror.centos.org/centos/$releasever/centosplus/$basearch/
+baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/centosplus/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 ```
 
 ```shell
 yum clean all
 yum makecache
-yum update
-```
 
-### 创建epel代理仓库
-
-- Nexus服务器域名：repo.bluersw.com
-- 仓库名称：epel-yum-proxy（属于repo-bluersw分组）
-- 仓库类型：proxy
-- 远程仓库地址：http://download.fedoraproject.org/pub/epel/
-
-客户端配置：
-
-```shell
-#安装EPEL源
-yum install epel-release -y
-
-#升级系统
+#更新系统第一次会比较慢
 yum update -y
-
-vi /etc/yum.repos.d/nexus-epel.repo
-```
-
-```conf
-[epel]
-name=Extra Packages for Enterprise Linux 7 - $basearch
-baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/$basearch
-#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch&infra=$infra&content=$contentdir
-failovermethod=priority
-enabled=1
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
-
-[epel-debuginfo]
-name=Extra Packages for Enterprise Linux 7 - $basearch - Debug
-baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/$basearch/debug
-#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-7&arch=$basearch&infra=$infra&content=$contentdir
-failovermethod=priority
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
-gpgcheck=1
-
-[epel-source]
-name=Extra Packages for Enterprise Linux 7 - $basearch - Source
-baseurl=http://repo.bluersw.com:8081/repository/repo-bluersw/$releasever/$basearch/SRPMS
-#metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-source-7&arch=$basearch&infra=$infra&content=$contentdir
-failovermethod=priority
-enabled=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
-gpgcheck=1
-```
-
-```shell
-#只使用私有库
-mv epel*.* bak
 ```
