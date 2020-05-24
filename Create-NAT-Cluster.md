@@ -2,7 +2,7 @@
 
 ## 准备工作
 
-* 准备一台安装CentOS-7操作系统的电脑。
+* 准备一台安装CentOS-7操作系统的电脑。(PS:安装系统时硬盘分区不要自动否则/home会分一半的硬盘空间)
 * 准备一份CentOS-7的iso安装文件。
 * [安装VNC Viewer](https://www.realvnc.com/en/)
 
@@ -19,6 +19,11 @@ yum install epel-release -y
 #升级系统
 yum update -y
 
+```
+
+如果有私有的YUM仓库请参照[搭建Nexus Repository包管理系统](Nexus-Repository.md)进行客户端设置。
+
+```shell
 #安装常用软件
 yum -y install htop wget yum-utils telnet net-tools acpid device-mapper-persistent-data lvm2
 
@@ -47,7 +52,6 @@ systemctl start  firewalld
 firewall-cmd --add-port=22/tcp --permanent
 firewall-cmd --add-port=80/tcp --permanent
 firewall-cmd --add-port=443/tcp --permanent
-firewall-cmd --add-port=50001/tcp --permanent
 
 #设置开机启动
 systemctl enable firewalld
@@ -58,6 +62,10 @@ firewall-cmd --reload
 #查看开放端口
 firewall-cmd --zone=public --list-ports
 ```
+
+## 创建虚拟机文件目录
+
+因为虚拟机文件会很大，所以建议单独准备一块硬盘来存储，以下示例的虚拟机文件都存储在/data中，可参考[硬盘分区格式化和挂载](Mount-Large-HardDrive.md)。
 
 ## 安装KVM
 
@@ -177,6 +185,12 @@ yum install epel-release -y
 
 #升级系统
 yum update -y
+
+```
+
+如果有私有的YUM仓库请参照[搭建Nexus Repository包管理系统](Nexus-Repository.md)进行客户端设置。
+
+```shell
 
 #安装常用软件
 yum -y install htop wget yum-utils telnet net-tools acpid
