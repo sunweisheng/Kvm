@@ -217,12 +217,12 @@ vi /etc/docker/daemon.json
 ```
 
 ```shell
+#重启服务
+systemctl restart docker
+
 #登录
 docker login http://repo.bluersw.com:63000
 docker login http://repo.bluersw.com:5000
-
-#重启服务
-systemctl restart docker
 
 #使用代理服务器下载镜像，镜像会存在代理服务器上供其他人下载
 docker pull repo.bluersw.com:63000/hello-world

@@ -165,6 +165,7 @@ virsh net-edit default
 重新加载并启动虚拟机
 
 ```shell
+#这个方法有个问题就是——执行下面命令之后，所有在运行中的虚拟机都需要关机再开机才能重新连接网络
 virsh net-destroy default
 
 virsh net-start default
