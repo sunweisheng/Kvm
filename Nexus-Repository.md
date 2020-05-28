@@ -180,6 +180,7 @@ Proxy仓库：
 - 仓库类型：proxy
 - 远程仓库地址：https://registry-1.docker.io
 - Repository Connectors：不创建（由Group仓库负责）
+- Allow anonymous docker pull ( Docker Bearer Token Realm required )：true（勾选）
 - Enable Docker V1 API：勾选
 - Docker Index：Use Docker Hub
 
@@ -187,16 +188,18 @@ Hosted仓库：
 
 - 仓库名称：my-docker-host
 - 仓库类型：hosted
-- Repository Connectors：HTTP 5000端口（负责Push Image）
+- Repository Connectors：HTTP 8082端口（负责Push Image）
+- Allow anonymous docker pull ( Docker Bearer Token Realm required )：true（勾选）
 - Enable Docker V1 API：勾选
-- 对外地址：http://repo.bluersw.com:5000
+- 对外地址：http://repo.bluersw.com:8082
 
 Group仓库：
 
 - 仓库名称：docker-bluersw（含hub-docker-proxy和my-docker-host）
 - 仓库类型：group
-- Repository Connectors：HTTP 63000端口（负责Pull Image）
-- 对外地址：http://repo.bluersw.com:63000
+- Repository Connectors：HTTP 8083端口（负责Pull Image）
+- - Allow anonymous docker pull ( Docker Bearer Token Realm required )：true（勾选）
+- 对外地址：http://repo.bluersw.com:8083
 
 group类型的Docker仓库只能pull不能push。
 
@@ -212,7 +215,7 @@ vi /etc/docker/daemon.json
 
 ```json
 {
-"insecure-registries": ["http://repo.bluersw.com:63000","http://repo.bluersw.com:5000"]
+"insecure-registries": ["http://repo.bluersw.com:8082","http://repo.bluersw.com:8083"]
 }
 ```
 
@@ -221,19 +224,19 @@ vi /etc/docker/daemon.json
 systemctl restart docker
 
 #登录
-docker login http://repo.bluersw.com:63000
-docker login http://repo.bluersw.com:5000
+docker login http://repo.bluersw.com:8082
+docker login http://repo.bluersw.com:8083
 
 #使用代理服务器下载镜像，镜像会存在代理服务器上供其他人下载
-docker pull repo.bluersw.com:63000/hello-world
+docker pull repo.bluersw.com:8083/hello-world
 
 [root@ops docker]# docker images
 REPOSITORY                           TAG                 IMAGE ID            CREATED             SIZE
-repo.bluersw.com:63000/hello-world   latest              bf756fb1ae65        4 months ago        13.3kB
+repo.bluersw.com:8083/hello-world   latest              bf756fb1ae65        4 months ago        13.3kB
 
 #改名
-docker tag repo.bluersw.com:63000/hello-world repo.bluersw.com:5000/hello-world
+docker tag repo.bluersw.com:8083/hello-world repo.bluersw.com:8082/hello-world
 
 #上传到Docker私有仓库
-docker push repo.bluersw.com:5000/hello-world
+docker push repo.bluersw.com:8082/hello-world
 ```
