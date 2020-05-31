@@ -8,3 +8,4 @@ kvm学习资料
 * [创建NAT网络虚拟机环境](Create-NAT-Cluster.md)
 * [硬盘分区格式化和挂载](Mount-Large-HardDrive.md)
 * [安装 Nginx](Install-Nginx.md)
+* [安装 Gitlab](Install-Gitlab.md)
