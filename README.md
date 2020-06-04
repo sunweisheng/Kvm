@@ -9,3 +9,4 @@ kvm学习资料
 * [硬盘分区格式化和挂载](Mount-Large-HardDrive.md)
 * [安装 Nginx](Install-Nginx.md)
 * [安装 Gitlab](Install-Gitlab.md)
+* [创建Windows 2008 R2虚拟机](Create-win2008R2.md)
