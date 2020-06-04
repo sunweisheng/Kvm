@@ -23,7 +23,7 @@ virt-install --name win-2008r2 --memory 4096 --vcpus 4 --disk device=cdrom,path=
 打开VNC远程连接后显示安装界面，选择企业版完全安装：
 ![Alt text](http://static.bluersw.com/images/Kvm/Create-Win2008R2-01.png)  
 
-需要安装SCSI控制器驱动才能识别KVM的硬盘，驱动在virtio-win.iso的\viostor\2k16\amd64\目录下：
+需要安装SCSI控制器驱动才能识别KVM的硬盘，驱动在virtio-win.iso的\viostor\2k8R2\amd64\目录下：
 ![Alt text](http://static.bluersw.com/images/Kvm/Create-Win2008R2-02.png)  
 ![Alt text](http://static.bluersw.com/images/Kvm/Create-Win2008R2-03.png)
 
