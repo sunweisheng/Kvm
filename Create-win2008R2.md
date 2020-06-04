@@ -3,6 +3,7 @@
 ## 准备工作
 
 下载Windows2008R2镜像：cn_windows_server_2008_r2_standard_enterprise_datacenter_web_x64_dvd_x15-50360.iso
+
 下载KVM的virtio-win驱动：virtio-win.iso
 
 ## 创建虚拟机
