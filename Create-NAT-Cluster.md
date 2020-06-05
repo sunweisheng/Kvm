@@ -304,6 +304,7 @@ virsh dumpxml centos7-k8s-node2 > /backup/domains/centos7-k8s-node2.xml
 virsh dumpxml centos7-mysql > /backup/domains/centos7-mysql.xml
 
 #备份虚拟机硬盘
+cd /backup
 cp /data/kvm/*.* .
 
 #启动虚拟机
