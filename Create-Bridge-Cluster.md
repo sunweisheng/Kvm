@@ -305,3 +305,15 @@ cp /data/kvm/*.* .
 virsh start centos7-k8s-master
 virsh start centos7-k8s-node1
 virsh start centos7-k8s-node2
+
+#查看网桥的连接情况vnet0-2是虚拟机的虚拟网卡
+brctl show
+
+bridge name	bridge id		STP enabled	interfaces
+br0		8000.107b44818ece	yes		enp2s0
+							vnet0
+							vnet1
+							vnet2
+virbr0		8000.5254006ba1ef	yes		virbr0-nic
+
+```
