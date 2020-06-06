@@ -6,6 +6,7 @@ kvm学习资料
 * [安装Java1.8](Install-Java-18.md)
 * [搭建Nexus Repository包管理系统](Nexus-Repository.md)
 * [创建NAT网络虚拟机环境](Create-NAT-Cluster.md)
+* [创建Bridge网络虚拟机环境](Create-Bridge-Cluster.md)
 * [硬盘分区格式化和挂载](Mount-Large-HardDrive.md)
 * [安装 Nginx](Install-Nginx.md)
 * [安装 Gitlab](Install-Gitlab.md)
