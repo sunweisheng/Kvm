@@ -36,3 +36,9 @@ source /etc/profile
 #检查结果
 java -version
 ```
+
+## Mac系统
+
+Java安装后目录是：
+
+/Library/Java/JavaVirtualMachines/jdk1.8.0_211.jdk/Contents/Home
