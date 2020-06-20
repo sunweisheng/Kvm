@@ -36,3 +36,8 @@ virt-install --name win-2008r2 --memory 4096 --vcpus 4 --disk device=cdrom,path=
 安装完成后进入系统，在设备管理器里安装网卡和其他设备的驱动，驱动都在virtio-win.iso中，选择virtio-win-0.1.1盘后全盘搜索即可。
 ![Alt text](http://static.bluersw.com/images/Kvm/Create-Win2008R2-06.png)  
 ![Alt text](http://static.bluersw.com/images/Kvm/Create-Win2008R2-07.png)  
+
+PS 如果是安装Windows 2012 R2:
+
+* 远程协助需要添加功能才能使用
+* 远程桌面开启后防火墙里需要设置对公网打开远程桌面的端口
