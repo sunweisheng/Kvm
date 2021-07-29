@@ -240,3 +240,30 @@ docker tag repo.bluersw.com:8083/hello-world repo.bluersw.com:8082/hello-world
 #上传到Docker私有仓库
 docker push repo.bluersw.com:8082/hello-world
 ```
+
+如果需要用HTTPS访问Nexus Repository则nginx的反向代理设置是：
+
+```conf
+server {
+    listen 443 ssl;
+    #配置HTTPS的默认访问端口为443。
+    #如果未在此处配置HTTPS的默认访问端口，可能会造成Nginx无法启动。
+    #如果您使用Nginx 1.15.0及以上版本，请使用listen 443 ssl代替listen 443和ssl on。
+    server_name repo.bluersw.com; #需要将yourdomain.com替换成证书绑定的域名。
+    ssl_certificate /opt/6016769_repo.bluersw.com.pem;  #需要将cert-file-name.pem替换成已上传的证书文件的名称。
+    ssl_certificate_key /opt/6016769_repo.bluersw.com.key; #需要将cert-file-name.key替换成已上传的证书密钥文件的名称。
+    ssl_session_timeout 5m;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    #表示使用的加密套件的类型。
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2; #表示使用的TLS协议的类型。
+    ssl_prefer_server_ciphers on;
+    location /  {
+     proxy_set_header   Host             $host;
+     proxy_set_header   X-Real-IP        $remote_addr;
+     proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+     proxy_set_header   X-Forwarded-Proto https;  # 转发时使用https协议
+     proxy_pass http://localhost:8081;
+     }
+}
+
+```
