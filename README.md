@@ -11,3 +11,4 @@ kvm学习资料
 * [安装 Nginx](Install-Nginx.md)
 * [安装 Gitlab](Install-Gitlab.md)
 * [创建Windows 2008 R2虚拟机](Create-win2008R2.md)
+* [Ubuntu下用KVM搭建Bridge网络虚拟机环境](Ubuntu-KVM-Bridge.md)

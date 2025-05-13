@@ -56,33 +56,35 @@ virt-manager
 如果你打算从本机之外访问KVM虚拟机，必须搭建网桥（Bridge），通过在 /etc/netplan目录下创建文件01-netcfg.yaml来新建网桥。
 
 ````shell
-sudo vi /etc/netplan/01-netcfg.yaml
+sudo vi /etc/netplan/01-network-manager-all.yaml
 ````
 
 ````yaml
 network:
   ethernets:
-    enp0s3:
+    #物理网卡
+    enp2s0:
+      #物理网卡不设置IP地址，仅作为链路层设备，网络层IP、网关、DNS都交给网桥负责
       dhcp4: false
       dhcp6: false
   # add configuration for bridge interface
   bridges:
     #virbr0网桥是KVM安装完成后自动创建
-    br0:
-      #enp0s3是物理网卡
-      interfaces: [enp0s3]
+    virbr0:
+      #enp2s0是物理网卡
+      interfaces: [enp2s0]
       dhcp4: false
-      #虚拟机IP
-      addresses: [192.168.1.162/24]
-      macaddress: 08:00:27:4b:1d:45
+      #网桥IP
+      addresses: [192.168.0.5/24]
+      macaddress: 10:7b:44:81:88:ce
       routes:
         - to: default
           #网关
-          via: 192.168.1.1
+          via: 192.168.0.1
           metric: 100
       nameservers:
         #DNS服务器
-        addresses: [4.2.2.2]
+        addresses: [192.168.0.1]
       parameters:
         stp: false
       dhcp6: false
@@ -92,6 +94,67 @@ network:
 ````shell
 #变更生效
 sudo netplan apply
+
+#如果显示Permissions for /etc/netplan/01-network-manager-all.yaml are too open. Netplan configuration should NOT be accessible by others.
+#说明文件权限太宽松
+sudo chmod 600 /etc/netplan/01-network-manager-all.yaml
+
+#在执行变更生效
+sudo netplan apply
+
 #验证生效
 sudo ip add show
 ````
+名为virbr0的网桥IP已经改为192.168.0.5，物理网卡enp2s0接入网桥并没有IP地址了。
+
+## 安装虚拟机
+
+远程桌面登录宿主机打开virt-manager管理软件。
+![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-01.png)
+
+点击“文件”并选择“新建虚拟机”
+![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-02.png)
+
+选择本地ISO安装
+![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-03.png)
+
+设置CPU和内存
+![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-04.png)
+
+设置硬盘
+![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-05.png)
+
+设置网络
+![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-06.png)
+
+开始安装操作系统
+![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-07.png)
+
+# 安装完成之后查看虚拟机
+
+````shell
+#查看虚拟机列表
+virsh list
+
+#关闭虚拟机
+virsh shutdown k8s-master
+
+#查看虚拟机信息 40G
+sudo qemu-img info k8s-master.qcow2
+
+#制作基础盘并收缩大小
+sudo qemu-img convert -O qcow2 k8s-master.qcow2 ubuntu-system.qcow2
+
+#查看转化后的虚拟机信息 4.19G
+sudo qemu-img info ubuntu-system.qcow2
+
+#删除原有文件
+sudo rm k8s-master.qcow2
+
+#从基础盘复制一份
+sudo cp ubuntu-system.qcow2 k8s-master.qcow2
+
+#启动虚拟机
+virsh start k8s-master
+````
+
