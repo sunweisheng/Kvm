@@ -53,7 +53,7 @@ virt-manager
 
 ## 创建Bridge网络
 
-如果你打算从本机之外访问KVM虚拟机，必须搭建网桥（Bridge），通过在 /etc/netplan目录下创建文件01-netcfg.yaml来新建网桥。
+如果你打算从本机之外访问KVM虚拟机，必须搭建网桥（Bridge），通过在 /etc/netplan目录下修改配置文件。
 
 ````shell
 sudo vi /etc/netplan/01-network-manager-all.yaml
@@ -86,7 +86,7 @@ network:
         #DNS服务器
         addresses: [192.168.0.1]
       parameters:
-        stp: false
+        stp: true
       dhcp6: false
   version: 2
 ````
@@ -105,7 +105,7 @@ sudo netplan apply
 #验证生效
 sudo ip add show
 ````
-名为virbr0的网桥IP已经改为192.168.0.5，物理网卡enp2s0接入网桥并没有IP地址了（网卡只负责数据发送和接收），虚拟机网络设置的网关需要时网桥的IP地址，因为网桥是虚拟机网络和物理网络之间的桥梁，就要像是一台交换机一样。
+名为virbr0的网桥IP已经改为192.168.0.5，物理网卡enp2s0接入网桥并没有IP地址了（网卡只负责数据发送和接收）。
 
 ## 安装虚拟机
 
@@ -124,7 +124,7 @@ sudo ip add show
 设置硬盘
 ![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-05.png)
 
-设置网络
+设置网络,虚拟机网关必须配置为真实物理网关，否则HTTPS会出问题。
 ![Alt text](http://static.bluersw.com/images/Kvm/U-KVM-B-06.png)
 
 开始安装操作系统
