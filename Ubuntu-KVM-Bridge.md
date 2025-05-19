@@ -15,6 +15,19 @@ sudo egrep -c '(vmx|svm)' /proc/cpuinfo
 #更新软件包
 sudo apt update
 sudo apt upgrade
+
+#安装必要工具
+sudo apt install htop wget  telnet net-tools ntp -y
+
+#查看自动时间同步服务状态
+sudo systemctl status ntp
+
+#查看时间同步服务器
+ntpq -p
+
+#查看防火墙状态
+sudo ufw status
+#Status: inactive代表防火墙未启用，系统的网络端口完全开放，无任何过滤规则生效
 ````
 ## Ubuntu下安装KVM
 
@@ -56,6 +69,7 @@ virt-manager
 如果你打算从本机之外访问KVM虚拟机，必须搭建网桥（Bridge），通过在 /etc/netplan目录下修改配置文件。
 
 ````shell
+# 操作系统是Ubuntu 24.04 桌面版
 sudo vi /etc/netplan/01-network-manager-all.yaml
 ````
 
@@ -105,7 +119,7 @@ sudo netplan apply
 #验证生效
 sudo ip add show
 ````
-名为virbr0的网桥IP已经改为192.168.0.5，物理网卡enp2s0接入网桥并没有IP地址了（网卡只负责数据发送和接收）。
+名为virbr0的网桥IP已经改为192.168.0.5，物理网卡enp2s0接入网桥并没有IP地址了（网卡只负责数据发送和接收），虚拟机网络的网关设置也是192.168.0.1,不能设置为网桥IP，否则虚拟机访问HTTPS会出问题。
 
 ## 安装虚拟机
 
